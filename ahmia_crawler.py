@@ -8,7 +8,7 @@ import re
 import os
 
 # === MongoDB Configuration ===
-MONGO_URI = os.environ.get("mongodb+srv://pasteadmi:G7v9pL2xN3aYqT5m@clustermukt.zgj6u5x.mongodb.net/?retryWrites=true&w=majority&appName=Clustermukt")
+MONGO_URI = os.environ.get("MONGO_URI")  # Secret should be set in GitHub/Render
 DB_NAME = "onion_monitor"
 COLLECTION_NAME = "ahmia_links"
 
@@ -16,9 +16,7 @@ COLLECTION_NAME = "ahmia_links"
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    handlers=[logging.StreamHandler(sys.stdout)]
 )
 
 # === Fetch Links from Ahmia ===
@@ -39,6 +37,9 @@ def fetch_ahmia_links():
 # === Save New Links Only ===
 def save_new_links(links):
     try:
+        if not MONGO_URI:
+            raise ValueError("MONGO_URI environment variable is not set.")
+
         client = MongoClient(MONGO_URI)
         db = client[DB_NAME]
         collection = db[COLLECTION_NAME]
