@@ -2,15 +2,14 @@ name: Ahmia Crawler Daily Job
 
 on:
   schedule:
-    - cron: '0 0 * * *' # runs every day at 00:00 UTC
-  workflow_dispatch:     # allows you to manually trigger from Actions tab
+    - cron: '0 3 * * *'   # runs daily at 03:00 AM UTC
+  workflow_dispatch:       # keeps the manual trigger option
 
 jobs:
-  run-crawler:
+  crawl:
     runs-on: ubuntu-latest
     env:
       MONGO_URI: ${{ secrets.MONGO_URI }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,5 +22,6 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Ahmia crawler
+      - name: Run crawler script
         run: python ahmia_crawler.py
+
